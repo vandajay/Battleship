@@ -3,7 +3,10 @@
 
 class Board{
     public:
-        
+        Board();
+        ~Board();
+        enum class STATE {HIT,MISS,EMPTY};
+
 
     private:
 

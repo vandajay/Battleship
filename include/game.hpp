@@ -4,11 +4,26 @@
 #include "ship.hpp"
 #include "board.hpp"
 
+/**
+ * @brief 
+ * Carrier      (C)        = 5 Hits
+ * Battleship   (B)        = 4 Hits
+ * Patrol       (P)        = 3 Hits
+ * Submarine    (S)        = 3 Hits
+ * Destroyer    (D)        = 2 Hits
+ * 
+ * EMPTY        (?)
+ * HIT          (!)
+ * MISS         (~)
+ */
+
 class Game {
     public:
         
 
+
     private:
+
 
 
 };
