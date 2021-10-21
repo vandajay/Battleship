@@ -1,10 +1,10 @@
-#include "battleship.hpp"
+#include "include/ship.hpp"
 
-Battleship::Battleship() {
+Ship::Ship() {
     this->name = "";
 }
 
-bool Battleship::setName(std::string name) {
+bool Ship::setName(std::string name) {
     if (name == "")
         return false;
 
@@ -13,6 +13,6 @@ bool Battleship::setName(std::string name) {
     return (this->name == name) ? true : false;
 }
 
-std::string Battleship::getName() {
+std::string Ship::getName() {
     return this->name;
 }

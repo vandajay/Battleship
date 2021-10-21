@@ -4,10 +4,10 @@
 #include <string>
 #include <stdio.h>
 
-class Battleship {
+class Ship {
     public:
-        Battleship();
-        ~Battleship();
+        Ship();
+        ~Ship();
         bool setName(std::string name);
         std::string getName();
 
