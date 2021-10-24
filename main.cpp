@@ -5,7 +5,6 @@
 
 int main() {
     Game bship = Game();
-
     bship.startGame();
 
     return 0;

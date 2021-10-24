@@ -8,7 +8,6 @@ Ship::Ship() {
 }
 
 Ship::~Ship() {
-    delete(this);
 }
 
 carrier::carrier() {

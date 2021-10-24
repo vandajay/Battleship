@@ -6,22 +6,23 @@
 Game::Game() {
     Board player = Board();
     Board enemy = Board();
-    Board playerHistory = Board();
-    Board enemyHistory = Board();
-
-    player.printBoard(true);
 }
 
-Game::~Game();
-
-void Game::startGame() {
-    std::cout << "|---------------------------- BATTLESHIP ----------------------------|" << std::endl;
-}
+Game::~Game() {}
 
 void Game::setPlayerBoard() {
 
 }
 
-void Game::setEnemyBoard(){
+void Game::setEnemyBoard() {
 
+}
+
+void Game::startGame() {
+    std::cout << R"(
+|---------------------------- BATTLESHIP ----------------------------|
+	    )" << std::endl;
+
+
+    Board::printBoard(true);
 }

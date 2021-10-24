@@ -19,7 +19,7 @@
  * MISS         (~)
  */
 
-class Game {
+class Game : Board, Ship {
     public:
         Game();
         ~Game();
