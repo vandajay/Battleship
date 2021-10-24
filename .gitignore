@@ -35,3 +35,6 @@
 .vscode
 .DS_Store
 battleship.code-workspace
+*.dSYM/**
+*.o
+include/*.dSYM

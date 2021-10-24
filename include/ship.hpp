@@ -9,69 +9,66 @@
 #include <array>
 #include <map>
 
+// MODEL
+
 class Ship {
-    public:
-        Ship();
-        ~Ship();
-
-        bool setPos(int x, int y, bool vertical);
-        std::map<const std::pair<int,int>, bool> getPos();
-        bool checkHit(std::pair<int,int> pos);
-
-        enum STATUS {ALIVE,DEAD};
-        STATUS status;
-
-        class type {
-            class carrier {
-                public:
-                    carrier();
-                    ~carrier();
-                private:
-                    int length;
-                    bool vertical;
-            };
-
-            class battleship {
-                public:
-                    battleship();
-                    ~battleship();
-                private:
-                    int length;
-                    bool vertical;
-            };
-
-            class patrol {
-                public:
-                    patrol();
-                    ~patrol();
-                private:
-                    int length;
-                    bool vertical;
-            };
-
-            class submarine {
-                public:
-                    submarine();
-                    ~submarine();
-                private:
-                    int length;
-                    bool vertical;
-            };
-
-            class destroyer {
-                public:
-                    destroyer();
-                    ~destroyer();
-                private:
-                    int length;
-                    bool vertical;
-            };
-        };
+public:
+    Ship();
+    ~Ship();
+    std::map<const std::pair<int, int>, bool> getPos();
+    bool setPos(int x, int y, bool vertical);
+    bool checkHit(std::pair<int, int> pos);
+    bool alive;
 
     private:
         // std::vector<const std::pair<int,int>, bool> hp;
-        std::map<const std::pair<int,int>, bool> hp;      
+        std::map<const std::pair<int, int>, bool> hp;
 };
 
+class carrier {
+    public:
+        carrier();
+        // ~carrier();
+    private:
+        int length;
+        bool vertical;
+};
+
+class battleship {
+    public:
+        // using Ship::Ship;
+        battleship();
+        // ~battleship();
+    private:
+        int length;
+        bool vertical;
+};
+
+class patrol {
+    public:
+        patrol();
+        // ~patrol();
+    private:
+        int length;
+        bool vertical;
+};
+
+class submarine {
+    public:
+        submarine();
+        // ~submarine();
+    private:
+        int length;
+        bool vertical;
+};
+
+class destroyer {
+    public:
+        destroyer();
+        // ~destroyer();
+    private:
+        int length;
+        bool vertical;
+};
 
 #endif
