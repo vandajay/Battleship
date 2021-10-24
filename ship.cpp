@@ -1,4 +1,7 @@
+// #include "include/game.hpp"
 #include "include/ship.hpp"
+// #include "include/board.hpp"
+
 #include <typeinfo>
 
 
@@ -35,7 +38,7 @@ destroyer::destroyer() {
     vertical = true;
 }
 
-bool Ship::checkHit(const std::pair<int, int> pos) {
+bool Ship::checkHit(std::pair<int, int> pos) {
     // see if position exists on ship map and set damage to pos at true
     if (hp.end() == hp.find(pos)) {
         hp[pos] = true;
@@ -44,12 +47,14 @@ bool Ship::checkHit(const std::pair<int, int> pos) {
     return false;
 }
 
-bool Ship::setPos(int x, int y, bool vertical) {
-    std::pair<int, int> pos = std::make_pair(x, y);
-    this->hp[pos] = false;
-    return (this->hp[pos] = false) ? true : false;
+bool Ship::setShipCoord(std::pair<int,int> coord, bool vertical) {
+    // int x = std::get<0>(coord);
+    // int y = std::get<1>(coord);
+    // std::pair<int, int> pos = std::make_pair(x, y);
+    this->hp[coord] = false;
+    return (this->hp[coord] = false) ? true : false;
 }
 
-std::map<const std::pair<int, int>, bool> Ship::getPos() {
+std::map<std::pair<int, int>, bool> Ship::getPos() {
     return this->hp;
 }

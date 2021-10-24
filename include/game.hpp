@@ -1,6 +1,7 @@
 #ifndef __GAME_HPP__
 #define __GAME_HPP__
 
+// #include "game.hpp"
 #include "ship.hpp"
 #include "board.hpp"
 
@@ -25,10 +26,19 @@ class Game : Board, Ship {
         ~Game();
         int hits;
         int misses;
-
-        void setPlayerBoard();
-        void setEnemyBoard();
+        int playerSunk;
+        int enemySunk;
+        bool playerWins;
+        bool enemyWins;
+        
         void startGame();
+
+        std::pair<int, int> getPlayerCoord();
+        bool getPlayerVertical();
+
+        bool setPlayerShip(char ch, bool v, std::pair<int, int> coord);
+
+        void setEnemyBoard();
 
     private:
 };

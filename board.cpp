@@ -1,8 +1,16 @@
+#include "include/game.hpp"
+#include "include/ship.hpp"
 #include "include/board.hpp"
+
 #include <iostream>
 
 Board::Board() {
     Board::initializeBoards();
+    cShip = new carrier();
+    bShip = new battleship();
+    pShip = new patrol();
+    sShip = new submarine();
+    dShip = new destroyer();
 }
 
 void Board::initializeBoards() {
@@ -14,7 +22,13 @@ void Board::initializeBoards() {
     }
 }
 
-Board::~Board() {}
+Board::~Board() {
+    delete(cShip);
+    delete(bShip);
+    delete(pShip);
+    delete(sShip);
+    delete(dShip);
+}
 
 void Board::printBoard(bool isPlayer) {
     int width = 10;
