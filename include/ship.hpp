@@ -12,13 +12,13 @@
 // MODEL
 
 class Ship {
-public:
-    Ship();
-    ~Ship();
-    std::map<const std::pair<int, int>, bool> getPos();
-    bool setPos(int x, int y, bool vertical);
-    bool checkHit(std::pair<int, int> pos);
-    bool alive;
+    public:
+        Ship();
+        ~Ship();
+        std::map<const std::pair<int, int>, bool> getPos();
+        bool setPos(int x, int y, bool vertical);
+        bool checkHit(std::pair<int, int> pos);
+        bool alive;
 
     private:
         // std::vector<const std::pair<int,int>, bool> hp;

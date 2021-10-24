@@ -18,20 +18,18 @@ Board::~Board() {}
 
 void Board::printBoard(bool isPlayer) {
     int width = 10;
-    std::cout << " 0123456789\n";
+    std::cout << " 0123456789" << std::endl;
 
     for (int y = 0; y < width; ++y) {
         std::cout << y;
         for (int x = 0; x < width; ++x) {
             if (isPlayer){
                 std::cout << this->player[x][y];
-                if (x == width - 1)
-                    std::cout << "\n";
             } else {
                 std::cout << this->enemy[x][y];
-                if (x == width - 1)
-                    std::cout << "\n";
             }
+            if (x == width - 1)
+                std::cout << std::endl;
         }
     }
 }

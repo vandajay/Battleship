@@ -20,11 +20,17 @@
  */
 
 class Game {
-public:
-    Game();
-    ~Game();
+    public:
+        Game();
+        ~Game();
+        int hits;
+        int misses;
 
-private:
+        void setPlayerBoard();
+        void setEnemyBoard();
+        void startGame();
+
+    private:
 };
 
 #endif

@@ -1,6 +1,8 @@
 #include "include/ship.hpp"
 #include <typeinfo>
 
+
+
 Ship::Ship() {
     alive = true;
 }
