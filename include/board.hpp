@@ -6,10 +6,10 @@
 
 // VIEW HELPER
 
-class Boards {
+class Board {
     public:
-        Boards();
-        ~Boards();
+        Board();
+        ~Board();
 
         enum class STATE {
             HIT, MISS, EMPTY
@@ -18,7 +18,7 @@ class Boards {
         char player[10][10];
         char enemy[10][10];
         void initializeBoards();
-        void printBoard(char board[10][10]);
+        void printBoard(bool isPlayer);
 
     private:
 };

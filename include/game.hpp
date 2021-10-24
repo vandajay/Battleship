@@ -2,7 +2,7 @@
 #define __GAME_HPP__
 
 #include "ship.hpp"
-#include "boards.hpp"
+#include "board.hpp"
 
 // CONTROLLER
 
