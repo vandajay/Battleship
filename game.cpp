@@ -40,60 +40,65 @@ std::pair<int, int> Game::getPlayerCoord() {
 }
 
 bool Game::getPlayerVertical() {
-    std::string v;
+    int v;
     int isVertical;
 
     do {
         std::cout << std::endl;
         std::cout << "Set vertical (y/n): ";
         std::cin >> v;
-        if (v == "y") {
+        if (v == 1) {
             isVertical = true;
         }
-        else if (v == "n") {
+        else if (v == 0) {
             isVertical = false;
         }
         else {
             std::cout << "Retry: Enter y/n" << std::endl;
         }
-    } while (v != "y" || v != "n");
+    } while (v != 1 && v != 0);
 
     return isVertical;
 }
 
-bool Game::setPlayerShip(int ship, bool vertical, std::pair<int, int> coord) {
-
+bool Game::setPlayerShip(int ship) {
+    std::pair<int, int> coord;
+    bool vertical;
 
     switch (ship) {
-        case 0:
-            std::cout << "Setting Carrier..." << std::endl;
-            break;
+    case 0:
+        std::cout << "Setting Carrier..." << std::endl;
+        break;
 
-        case 1:
-            std::cout << "Setting Battleship..." << std::endl;
-            break;
+    case 1:
+        std::cout << "Setting Battleship..." << std::endl;
+        break;
 
-        case 2:
-            std::cout << "Setting Patrol..." << std::endl;
+    case 2:
+        std::cout << "Setting Patrol..." << std::endl;
+        break;
 
-            break;
+    case 3:
+        std::cout << "Setting Submarine..." << std::endl;
+        break;
 
-        case 3:
-            std::cout << "Setting Submarine..." << std::endl;
-            break;
-
-        case 4:
-            std::cout << "Setting Destroyer..." << std::endl;
-            break;
-
-        default:
-            break;
+    case 4:
+        std::cout << "Setting Destroyer..." << std::endl;
+        break;
     }
+
+    coord = getPlayerCoord();
+    vertical = getPlayerVertical();
+
+
+
+
+
 
     return true;
 }
 
-void Game::printBoard(Board &b) {
+void Game::printBoard(Board& b) {
     int width = 10;
     std::cout << " 0123456789" << std::endl;
 
@@ -107,6 +112,86 @@ void Game::printBoard(Board &b) {
     }
 }
 
+bool place(Board &b, int ship, std::pair<int,int> coord, bool isVertical) {
+    int len;
+    char ch;
+    switch (ship) {
+    case 0:
+        len = 5;
+        ch = 'C';
+        break;
+    case 1:
+        len = 4;
+        ch = 'B';
+        break;
+    case 2:
+        len = 3;
+        ch = 'P';
+        break;
+    case 3:
+        len = 3;
+        ch = 'S';
+        break;
+    case 4:
+        len = 2;
+        ch = 'D';
+        break;
+    }
+    for (int i = 0; i < len; i++) {
+        if (isVertical)
+            b.board[coord.first][coord.second + i] = ch;
+        else
+            b.board[coord.first + i][coord.second] = ch;
+    }
+}
+
+bool Game::checkCoord(Board& b, int ship, bool isVertical, std::pair<int, int> coord) {
+    int len;
+    switch (ship) {
+        case 0:
+            len = 5;
+            break;
+        case 1:
+            len = 4;
+            break;
+        case 2:
+            len = 3;
+            break;
+        case 3:
+            len = 3;
+            break;
+        case 4:
+            len = 2;
+            break;
+    }
+
+    auto search = b.positions.find(coord);
+
+    // initial position already exists
+    if (search != b.positions.end()) {
+        std::cout << "Invalid Position" << std::endl;
+        return false;
+    }
+    // coordinate out of bounds
+    else if (coord.first >= 10 || coord.second >= 10 || coord.first < 0 || coord.second < 0) { 
+        std::cout << "Invalid Position" << std::endl;
+        return false;
+    }
+    
+    for (int i = 0; i < len; i++) {
+        if ((isVertical && b.board[coord.first][coord.second + i] != '~') || (!isVertical && b.board[coord.first + i][coord.second] != '~')) {
+            std::cout << "Invalid Position" << std::endl;
+            return false;
+        }
+        if ((!isVertical && (coord.first + i) >= 10) ||
+            (isVertical && (coord.second + i) >= 10)) {
+                std::cout << "Invalid Position" << std::endl;
+                return false;
+                }
+    }    
+    b.positions[coord];
+}
+
 void Game::startGame() {
     int count = 5;
     std::pair<int, int> coord;
@@ -115,26 +200,71 @@ void Game::startGame() {
     Board* player = new Board();
     Board* enemy = new Board();
 
-    Carrier* eC;
-    Battleship* eB;
-    Patrol* eP;
-    Submarine* eS;
-    Destroyer* eD;
+    Carrier* pC = new Carrier();
+    Battleship* pB = new Battleship();
+    Patrol* pP = new Patrol();
+    Submarine* pS = new Submarine();
+    Destroyer* pD = new Destroyer();
 
-    Carrier* pC;
-    Battleship* pB;
-    Patrol* pP;
-    Submarine* pS;
-    Destroyer* pD;
+    Carrier* eC = new Carrier();
+    Battleship* eB = new Battleship();
+    Patrol* eP = new Patrol();
+    Submarine* eS = new Submarine();
+    Destroyer* eD = new Destroyer();
 
     Game::printBoard(*(player)); // TODO
 
     for (int i = 0; i < count; ++i) {
-        coord = getPlayerCoord();
-        vertical = getPlayerVertical();
+        switch (i) {
+        case 0:
+            std::cout << "Setting Carrier..." << std::endl;
+            coord = getPlayerCoord();
+            vertical = getPlayerVertical();
+            pC->vertical = vertical;
+            checkCoord(*(player), i, vertical, coord);
+            place(*(player), i, coord, vertical);
+            break;
+
+        case 1:
+            std::cout << "Setting Battleship..." << std::endl;
+            coord = getPlayerCoord();
+            vertical = getPlayerVertical();
+            pB->vertical = vertical;
+            checkCoord(*(player), i, pB->vertical, coord);
+            place(*(player), i, coord, vertical);
+            break;
+
+        case 2:
+            std::cout << "Setting Patrol..." << std::endl;
+            coord = getPlayerCoord();
+            vertical = getPlayerVertical();
+            pP->vertical = vertical;
+            checkCoord(*(player), i, pP->vertical, coord);
+            place(*(player), i, coord, vertical);
+            break;
+
+        case 3:
+            std::cout << "Setting Submarine..." << std::endl;
+            coord = getPlayerCoord();
+            vertical = getPlayerVertical();
+            pS->vertical = vertical;
+            checkCoord(*(player), i, pS->vertical, coord);
+            place(*(player), i, coord, vertical);
+            break;
+
+        case 4:
+            std::cout << "Setting Destroyer..." << std::endl;
+            coord = getPlayerCoord();
+            vertical = getPlayerVertical();
+            pD->vertical = vertical;
+            checkCoord(*(player), i, pD->vertical, coord);
+            place(*(player), i, coord, vertical);
+            break;
+        }
+        printBoard(*(player));
     }
 
-    getPlayerCoord();
+
 
     std::cout << "|---------------------------- BATTLESHIP ----------------------------|" << std::endl;
 }

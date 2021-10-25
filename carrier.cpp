@@ -8,5 +8,6 @@ Carrier::Carrier() {
 }
 
 void Carrier::setPos(const std::pair<int, int> pos) {
-    
+
+    this->setPos(pos);
 }

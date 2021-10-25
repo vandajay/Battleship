@@ -3,13 +3,18 @@
 
 #include "board.hpp"
 
+#include <map>
+
 class Game {
     public:
         void startGame();
         void printBoard(Board &b);
         std::pair<int, int> getPlayerCoord();
         bool getPlayerVertical();
-        bool setPlayerShip(int ship, bool vertical, std::pair<int, int> coord);
+        bool setPlayerShip(int ship);
+        bool checkCoord(Board &b, int ship, bool isVertical, std::pair<int, int> coord);
+
+
 
 
 

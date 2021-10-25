@@ -5,3 +5,8 @@ Battleship::Battleship() {
     length = 5;
     vertical = true;
 }
+
+bool Battleship::setPos(const std::pair<int, int> pos) {
+    
+
+}

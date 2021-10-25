@@ -15,7 +15,7 @@ class Patrol {
     public:
         Patrol();
         std::map<const std::pair<int, int>, bool> getPos();
-        bool setPos(int x, int y, bool vertical);
+        bool setPos(const std::pair<int, int> pos);
         bool checkHit(std::pair<int, int> pos);
         bool alive;
         int length;
