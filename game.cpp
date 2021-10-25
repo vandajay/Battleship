@@ -9,6 +9,7 @@
 
 #include <utility>
 #include <iostream>
+#include <map>
 
 std::pair<int, int> Game::getPlayerCoord() {
     std::string y;
@@ -164,11 +165,12 @@ bool Game::checkCoord(Board& b, int ship, bool isVertical, std::pair<int, int> c
             len = 2;
             break;
     }
-
-    auto search = b.positions.find(coord);
+    std::map<const std::pair<int, int>, bool >::iterator search;
+    search = b.positions.find(coord);
 
     // initial position already exists
-    if (search != b.positions.end()) {
+
+    if (search == b.positions.end()) { // TODO
         std::cout << "Invalid Position" << std::endl;
         return false;
     }
@@ -179,7 +181,7 @@ bool Game::checkCoord(Board& b, int ship, bool isVertical, std::pair<int, int> c
     }
     
     for (int i = 0; i < len; i++) {
-        if ((isVertical && b.board[coord.first][coord.second + i] != '~') || (!isVertical && b.board[coord.first + i][coord.second] != '~')) {
+        if ((!isVertical && b.board[coord.first][coord.second + i] != '~') || (isVertical && b.board[coord.first + i][coord.second] != '~')) {
             std::cout << "Invalid Position" << std::endl;
             return false;
         }
