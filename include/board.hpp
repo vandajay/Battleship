@@ -1,34 +1,22 @@
 #ifndef __BOARD_HPP__
 #define __BOARD_HPP__
 
-// #include "include/game.hpp"
-#include "ship.hpp"
-// #include "include/board.hpp"
-
 #include <vector>
 #include <string>
+#include <iostream>
 
 // VIEW HELPER
 
 class Board {
+    // int* ptr;
     public:
         Board();
-        ~Board();
-
-        carrier* cShip;
-        battleship* bShip;
-        patrol* pShip;
-        submarine* sShip;
-        destroyer* dShip;
-
-        enum class STATE {
-            HIT, MISS, EMPTY
-        };
-
-        char player[10][10];
-        char enemy[10][10];
-        void initializeBoards();
+        char board[10][10];
+        void initializeBoard(Board &b);
         void printBoard(bool isPlayer);
+
+        // Board(int* ptr) : ptr(ptr) {}
+        // int* operator[](const int x) {return x + x;}
 
     private:
 };

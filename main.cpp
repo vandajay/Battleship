@@ -1,11 +1,7 @@
 #include "include/game.hpp"
-#include "include/ship.hpp"
-#include "include/board.hpp"
-
 
 int main() {
-    Game bship = Game();
-    bship.startGame();
-
+    Game game;
+    game.startGame();
     return 0;
 }
