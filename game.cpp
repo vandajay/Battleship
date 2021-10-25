@@ -11,6 +11,12 @@
 #include <iostream>
 #include <map>
 
+/*****************************************************************
+ * Command Line Battleship
+ * @author Jay Van Dam
+ * @version Fall 2021
+******************************************************************/
+
 std::pair<int, int> Game::getPlayerCoord() {
     std::string y;
     std::string x;
