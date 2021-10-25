@@ -1,7 +1,7 @@
 #ifndef __SHIP_HPP__
 #define __SHIP_HPP__
 
-// #include "include/game.hpp"
+#include "game.hpp"
 // #include "include/ship.hpp"
 // #include "include/board.hpp"
 
@@ -17,83 +17,89 @@
 
 class Ship {
     public:
-        Ship();
+        Ship(char c, int l);
         ~Ship();
         std::map<std::pair<int, int>, bool> getPos();
-        bool setShipCoord(std::pair<int, int>, bool vertical);
+        bool setShipCoord(Ship* s, std::pair<int,int> coord);
         bool checkHit(std::pair<int, int> pos);
+        int getLength() { return length; }
+        void setVertical(Ship* s, bool v) { vertical = v; }
+        bool getVertical() { return vertical; }
 
+        char name;
         bool alive;
+        int length;
+        bool vertical;
         std::map<std::pair<int, int>, bool> hp;
 
     private:
         // std::vector<std::pair<int,int>, bool> hp;
 };
 
-class carrier : public Ship {
-    public:
-        carrier();
-        // ~carrier();
-        int getLength() { return length; }
-        void setVertical(bool v) { vertical = v; }
-        bool getVertical(bool v) { return vertical; }
+// class carrier : public Ship {
+//     public:
+//         carrier();
+//         // ~carrier();
+//         int getLength() { return length; }
+//         void setVertical(bool v) { vertical = v; }
+//         bool getVertical() { return vertical; }
 
-    private:
-        int length;
-        bool vertical;
-};
+//     private:
+//         int length;
+//         bool vertical;
+// };
 
-class battleship : Ship {
-    public:
-        battleship();
-        // ~battleship();
-        int getLength() { return length; }
-        void setVertical(bool v) { vertical = v; }
-        bool getertical(bool v) { return vertical; }
+// class battleship : public Ship {
+//     public:
+//         battleship();
+//         // ~battleship();
+//         int getLength() { return length; }
+//         void setVertical(bool v) { vertical = v; }
+//         bool getVertical() { return vertical; }
 
-    private:
-        int length;
-        bool vertical;
-};
+//     private:
+//         int length;
+//         bool vertical;
+// };
 
-class patrol : Ship {
-    public:
-        patrol();
-        // ~patrol();
-        int getLength() {return length;}
-        void setVertical(bool v) {vertical = v;}
-        bool getertical(bool v) { return vertical;}
+// class patrol : public Ship {
+//     public:
+//         patrol();
+//         // ~patrol();
+//         int getLength() {return length;}
+//         void setVertical(bool v) {vertical = v;}
+//         bool getVertical() { return vertical;}
 
 
-    private:
-        int length;
-        bool vertical;
-};
+//     private:
+//         int length;
+//         bool vertical;
+// };
 
-class submarine : Ship {
-    public:
-        submarine();
-        // ~submarine();
-        int getLength() { return length; }
-        void setVertical(bool v) { vertical = v; }
-        bool getertical(bool v) { return vertical; }
+// class submarine : public Ship {
+//     public:
+//         submarine();
+//         // ~submarine();
+//         int getLength() { return length; }
+//         void setVertical(bool v) { vertical = v; }
+//         bool getVertical() { return vertical; }
 
-    private:
-        int length;
-        bool vertical;
-};
+//     private:
+//         int length;
+//         bool vertical;
+// };
 
-class destroyer : Ship {
-    public:
-        destroyer();
-        // ~destroyer();
-        int getLength() { return length; }
-        void setVertical(bool v) { vertical = v; }
-        bool getertical(bool v) { return vertical; }
+// class destroyer : public Ship {
+//     public:
+//         destroyer();
+//         // ~destroyer();
+//         int getLength() { return length; }
+//         void setVertical(bool v) { vertical = v; }
+//         bool getVertical() { return vertical; }
 
-    private:
-        int length;
-        bool vertical;
-};
+//     private:
+//         int length;
+//         bool vertical;
+// };
 
 #endif

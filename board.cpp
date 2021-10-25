@@ -6,11 +6,7 @@
 
 Board::Board() {
     Board::initializeBoards();
-    cShip = new carrier();
-    bShip = new battleship();
-    pShip = new patrol();
-    sShip = new submarine();
-    dShip = new destroyer();
+
 }
 
 void Board::initializeBoards() {
@@ -22,13 +18,7 @@ void Board::initializeBoards() {
     }
 }
 
-Board::~Board() {
-    delete(cShip);
-    delete(bShip);
-    delete(pShip);
-    delete(sShip);
-    delete(dShip);
-}
+Board::~Board() {}
 
 void Board::printBoard(bool isPlayer) {
     int width = 10;

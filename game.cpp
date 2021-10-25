@@ -16,6 +16,31 @@ Game::Game() {
     enemyWins = false;
     playerSunk = 0;
     enemySunk = 0;
+
+    // Ship* pCarrier;
+    // Ship* pBattleship;
+    // Ship* pPatrol;
+    // Ship* pSubmarine;
+    // Ship* pDestroyer;
+
+    // Ship* eCarrier;
+    // Ship* eBattleship;
+    // Ship* ePatrol;
+    // Ship* eSubmarine;
+    // Ship* eDestroyer;
+
+
+    // pCarrier = new Ship('C', 5);
+    // pBattleship = new Ship('B', 4);
+    // pPatrol = new Ship('P', 3);
+    // pSubmarine = new Ship('S', 3);
+    // pDestroyer = new Ship('D', 2);
+
+    // eCarrier = new Ship('C', 5);
+    // eBattleship = new Ship('B', 4);
+    // ePatrol = new Ship('P', 3);
+    // eSubmarine = new Ship('S', 3);
+    // eDestroyer = new Ship('D', 2);
 }
 
 Game::~Game() {}
@@ -75,40 +100,36 @@ void Game::setEnemyBoard() {
 
 }
 
-bool Game::setPlayerShip(char ch, bool vertical, std::pair<int, int> coord) {
+bool Game::setPlayerShip(Ship* ship, bool v, std::pair<int, int> coord) {
 
 
-    switch (ch) {
+    switch (ship->name) {
     case 'C':
         std::cout << "Setting Carrier..." << std::endl;
-        this->cShip->setVertical(vertical);
-        this->cShip->setShipCoord(coord, vertical);
         break;
 
     case 'B':
         std::cout << "Setting Battleship..." << std::endl;
-        this->bShip->setVertical(vertical);
         break;
 
     case 'P':
         std::cout << "Setting Patrol..." << std::endl;
-        this->pShip->setVertical(vertical);
-
         break;
 
     case 'S':
         std::cout << "Setting Submarine..." << std::endl;
-        this->sShip->setVertical(vertical);
         break;
 
     case 'D':
         std::cout << "Setting Destroyer..." << std::endl;
-        this->dShip->setVertical(vertical);
         break;
 
     default:
         break;
     }
+
+    setVertical(ship, v);
+    setShipCoord(ship, coord);
 
     return true;
 }
@@ -125,31 +146,11 @@ void Game::startGame() {
         std::cout << "PLAYER" << std::endl;
         Board::printBoard(true);
 
-        Game::setPlayerShip(
-            'C',
-            Game::getPlayerVertical(),
-            Game::getPlayerCoord()
-        );
-        Game::setPlayerShip(
-            'B',
-            Game::getPlayerVertical(),
-            Game::getPlayerCoord()
-        );
-        Game::setPlayerShip(
-            'P',
-            Game::getPlayerVertical(),
-            Game::getPlayerCoord()
-        );
-        Game::setPlayerShip(
-            'S',
-            Game::getPlayerVertical(),
-            Game::getPlayerCoord()
-        );
-        Game::setPlayerShip(
-            'D',
-            Game::getPlayerVertical(),
-            Game::getPlayerCoord()
-        );
+        Game::setPlayerShip(this->cShip, Game::getPlayerVertical(), Game::getPlayerCoord());
+        Game::setPlayerShip(this->bShip, Game::getPlayerVertical(),Game::getPlayerCoord());
+        Game::setPlayerShip(this->pShip, Game::getPlayerVertical(), Game::getPlayerCoord());
+        Game::setPlayerShip(this->sShip, Game::getPlayerVertical(), Game::getPlayerCoord());
+        Game::setPlayerShip(this->dShip, Game::getPlayerVertical(), Game::getPlayerCoord());
     }
 }
 

@@ -20,10 +20,11 @@
  * MISS         (~)
  */
 
-class Game : Board, Ship {
+class Game {
     public:
         Game();
         ~Game();
+
         int hits;
         int misses;
         int playerSunk;
@@ -35,9 +36,7 @@ class Game : Board, Ship {
 
         std::pair<int, int> getPlayerCoord();
         bool getPlayerVertical();
-
-        bool setPlayerShip(char ch, bool v, std::pair<int, int> coord);
-
+        bool setPlayerShip(Ship* ship, bool v, std::pair<int, int> coord);
         void setEnemyBoard();
 
     private:
