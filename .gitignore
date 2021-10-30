@@ -38,3 +38,4 @@ battleship.code-workspace
 *.dSYM/**
 *.o
 include/*.dSYM
+deliverables/

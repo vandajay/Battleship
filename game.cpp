@@ -12,9 +12,9 @@
 #include <map>
 
 /*****************************************************************
- * Command Line Battleship
- * @author Jay Van Dam
- * @version Fall 2021
+* Command Line Battleship
+* @author Jay Van Dam
+* @version Fall 2021
 ******************************************************************/
 
 std::pair<int, int> Game::getPlayerCoord() {
@@ -73,23 +73,23 @@ bool Game::setPlayerShip(int ship) {
     bool vertical;
 
     switch (ship) {
-    case 0:
+        case 0:
         std::cout << "Setting Carrier..." << std::endl;
         break;
 
-    case 1:
+        case 1:
         std::cout << "Setting Battleship..." << std::endl;
         break;
 
-    case 2:
+        case 2:
         std::cout << "Setting Patrol..." << std::endl;
         break;
 
-    case 3:
+        case 3:
         std::cout << "Setting Submarine..." << std::endl;
         break;
 
-    case 4:
+        case 4:
         std::cout << "Setting Destroyer..." << std::endl;
         break;
     }
@@ -114,7 +114,7 @@ void Game::printBoard(Board& b) {
         for (int x = 0; x < width; ++x) {
             std::cout << b.board[x][y];
             if (x == width - 1)
-                std::cout << std::endl;
+            std::cout << std::endl;
         }
     }
 }
@@ -123,32 +123,32 @@ bool place(Board &b, int ship, std::pair<int,int> coord, bool isVertical) {
     int len;
     char ch;
     switch (ship) {
-    case 0:
+        case 0:
         len = 5;
         ch = 'C';
         break;
-    case 1:
+        case 1:
         len = 4;
         ch = 'B';
         break;
-    case 2:
+        case 2:
         len = 3;
         ch = 'P';
         break;
-    case 3:
+        case 3:
         len = 3;
         ch = 'S';
         break;
-    case 4:
+        case 4:
         len = 2;
         ch = 'D';
         break;
     }
     for (int i = 0; i < len; i++) {
         if (isVertical)
-            b.board[coord.first][coord.second + i] = ch;
+        b.board[coord.first][coord.second + i] = ch;
         else
-            b.board[coord.first + i][coord.second] = ch;
+        b.board[coord.first + i][coord.second] = ch;
     }
 }
 
@@ -156,20 +156,20 @@ bool Game::checkCoord(Board& b, int ship, bool isVertical, std::pair<int, int> c
     int len;
     switch (ship) {
         case 0:
-            len = 5;
-            break;
+        len = 5;
+        break;
         case 1:
-            len = 4;
-            break;
+        len = 4;
+        break;
         case 2:
-            len = 3;
-            break;
+        len = 3;
+        break;
         case 3:
-            len = 3;
-            break;
+        len = 3;
+        break;
         case 4:
-            len = 2;
-            break;
+        len = 2;
+        break;
     }
     std::map<const std::pair<int, int>, bool >::iterator search;
     search = b.positions.find(coord);
@@ -181,22 +181,22 @@ bool Game::checkCoord(Board& b, int ship, bool isVertical, std::pair<int, int> c
         return false;
     }
     // coordinate out of bounds
-    else if (coord.first >= 10 || coord.second >= 10 || coord.first < 0 || coord.second < 0) { 
+    else if (coord.first >= 10 || coord.second >= 10 || coord.first < 0 || coord.second < 0) {
         std::cout << "Invalid Position" << std::endl;
         return false;
     }
-    
+
     for (int i = 0; i < len; i++) {
         if ((!isVertical && b.board[coord.first][coord.second + i] != '~') || (isVertical && b.board[coord.first + i][coord.second] != '~')) {
             std::cout << "Invalid Position" << std::endl;
             return false;
         }
         if ((!isVertical && (coord.first + i) >= 10) ||
-            (isVertical && (coord.second + i) >= 10)) {
-                std::cout << "Invalid Position" << std::endl;
-                return false;
-                }
-    }    
+        (isVertical && (coord.second + i) >= 10)) {
+            std::cout << "Invalid Position" << std::endl;
+            return false;
+        }
+    }
     b.positions[coord];
 }
 
@@ -224,7 +224,7 @@ void Game::startGame() {
 
     for (int i = 0; i < count; ++i) {
         switch (i) {
-        case 0:
+            case 0:
             std::cout << "Setting Carrier..." << std::endl;
             coord = getPlayerCoord();
             vertical = getPlayerVertical();
@@ -233,7 +233,7 @@ void Game::startGame() {
             place(*(player), i, coord, vertical);
             break;
 
-        case 1:
+            case 1:
             std::cout << "Setting Battleship..." << std::endl;
             coord = getPlayerCoord();
             vertical = getPlayerVertical();
@@ -242,7 +242,7 @@ void Game::startGame() {
             place(*(player), i, coord, vertical);
             break;
 
-        case 2:
+            case 2:
             std::cout << "Setting Patrol..." << std::endl;
             coord = getPlayerCoord();
             vertical = getPlayerVertical();
@@ -251,7 +251,7 @@ void Game::startGame() {
             place(*(player), i, coord, vertical);
             break;
 
-        case 3:
+            case 3:
             std::cout << "Setting Submarine..." << std::endl;
             coord = getPlayerCoord();
             vertical = getPlayerVertical();
@@ -260,7 +260,7 @@ void Game::startGame() {
             place(*(player), i, coord, vertical);
             break;
 
-        case 4:
+            case 4:
             std::cout << "Setting Destroyer..." << std::endl;
             coord = getPlayerCoord();
             vertical = getPlayerVertical();
