@@ -1,278 +1,237 @@
-#include "include/carrier.hpp"
-#include "include/battleship.hpp"
-#include "include/patrol.hpp"
-#include "include/submarine.hpp"
-#include "include/destroyer.hpp"
-
-#include "include/game.hpp"
-#include "include/board.hpp"
-
-#include <utility>
+#include "Game.hpp"
 #include <iostream>
-#include <map>
+#include <cstdlib>
 
-/*****************************************************************
-* Command Line Battleship
-* @author Jay Van Dam
-* @version Fall 2021
-******************************************************************/
-
-std::pair<int, int> Game::getPlayerCoord() {
-    std::string y;
-    std::string x;
-    int row;
-    int col;
-
-    do {
-        std::cout << std::endl;
-        std::cout << "Enter Row for (0-9): ";
-        std::cin >> y;
-        row = std::atoi(y.c_str());
-
-        std::cout << "\n" << std::endl;
-        std::cout << "Enter Col (0-9): ";
-        std::cin >> x;
-        col = std::atoi(x.c_str());
-
-        if (row < 0 || row > 9 || col < 0 || col > 9) {
-            std::cout << std::endl;
-            std::cout << "Retry: Coordinates out of bounds." << std::endl;
-            // sleep(1);
-        }
-    } while (row < 0 || row > 9 || col < 0 || col > 9);
-
-    std::pair<int, int> coord = std::make_pair(col, row);
-
-    return coord;
-}
-
-bool Game::getPlayerVertical() {
-    int v;
-    int isVertical;
-
-    do {
-        std::cout << std::endl;
-        std::cout << "Set vertical (y/n): ";
-        std::cin >> v;
-        if (v == 1) {
-            isVertical = true;
-        }
-        else if (v == 0) {
-            isVertical = false;
-        }
-        else {
-            std::cout << "Retry: Enter y/n" << std::endl;
-        }
-    } while (v != 1 && v != 0);
-
-    return isVertical;
-}
-
-bool Game::setPlayerShip(int ship) {
-    std::pair<int, int> coord;
-    bool vertical;
-
-    switch (ship) {
-        case 0:
-        std::cout << "Setting Carrier..." << std::endl;
-        break;
-
-        case 1:
-        std::cout << "Setting Battleship..." << std::endl;
-        break;
-
-        case 2:
-        std::cout << "Setting Patrol..." << std::endl;
-        break;
-
-        case 3:
-        std::cout << "Setting Submarine..." << std::endl;
-        break;
-
-        case 4:
-        std::cout << "Setting Destroyer..." << std::endl;
-        break;
+std::ostream& operator << (std::ostream& output, Board& b) {
+    output << "  A B C D E F G H I J\n";
+    for (int y = 0; y < BOARD_DIM; ++y) {
+        output << y << " ";
+        for (int x = 0; x < BOARD_DIM; ++x)
+            std::cout << b.gameBoard[y][x] << " ";
+        output << std::endl;
     }
 
-    coord = getPlayerCoord();
-    vertical = getPlayerVertical();
-
-
-
-
-
-
-    return true;
-}
-
-void Game::printBoard(Board& b) {
-    int width = 10;
-    std::cout << " 0123456789" << std::endl;
-
-    for (int y = 0; y < width; ++y) {
-        std::cout << y;
-        for (int x = 0; x < width; ++x) {
-            std::cout << b.board[x][y];
-            if (x == width - 1)
-            std::cout << std::endl;
-        }
-    }
-}
-
-bool place(Board &b, int ship, std::pair<int,int> coord, bool isVertical) {
-    int len;
-    char ch;
-    switch (ship) {
-        case 0:
-        len = 5;
-        ch = 'C';
-        break;
-        case 1:
-        len = 4;
-        ch = 'B';
-        break;
-        case 2:
-        len = 3;
-        ch = 'P';
-        break;
-        case 3:
-        len = 3;
-        ch = 'S';
-        break;
-        case 4:
-        len = 2;
-        ch = 'D';
-        break;
-    }
-    for (int i = 0; i < len; i++) {
-        if (isVertical)
-        b.board[coord.first][coord.second + i] = ch;
-        else
-        b.board[coord.first + i][coord.second] = ch;
-    }
-}
-
-bool Game::checkCoord(Board& b, int ship, bool isVertical, std::pair<int, int> coord) {
-    int len;
-    switch (ship) {
-        case 0:
-        len = 5;
-        break;
-        case 1:
-        len = 4;
-        break;
-        case 2:
-        len = 3;
-        break;
-        case 3:
-        len = 3;
-        break;
-        case 4:
-        len = 2;
-        break;
-    }
-    std::map<const std::pair<int, int>, bool >::iterator search;
-    search = b.positions.find(coord);
-
-    // initial position already exists
-
-    if (search == b.positions.end()) { // TODO
-        std::cout << "Invalid Position" << std::endl;
-        return false;
-    }
-    // coordinate out of bounds
-    else if (coord.first >= 10 || coord.second >= 10 || coord.first < 0 || coord.second < 0) {
-        std::cout << "Invalid Position" << std::endl;
-        return false;
-    }
-
-    for (int i = 0; i < len; i++) {
-        if ((!isVertical && b.board[coord.first][coord.second + i] != '~') || (isVertical && b.board[coord.first + i][coord.second] != '~')) {
-            std::cout << "Invalid Position" << std::endl;
-            return false;
-        }
-        if ((!isVertical && (coord.first + i) >= 10) ||
-        (isVertical && (coord.second + i) >= 10)) {
-            std::cout << "Invalid Position" << std::endl;
-            return false;
-        }
-    }
-    b.positions[coord];
+    return output;
 }
 
 void Game::startGame() {
-    int count = 5;
-    std::pair<int, int> coord;
-    bool vertical;
+    playerBoard = new Board();
+    enemyBoard = new Board();
+    initializeBoard(*(playerBoard));
+    initializeBoardAuto(*(enemyBoard));
+}
 
-    Board* player = new Board();
-    Board* enemy = new Board();
-
-    Carrier* pC = new Carrier();
-    Battleship* pB = new Battleship();
-    Patrol* pP = new Patrol();
-    Submarine* pS = new Submarine();
-    Destroyer* pD = new Destroyer();
-
-    Carrier* eC = new Carrier();
-    Battleship* eB = new Battleship();
-    Patrol* eP = new Patrol();
-    Submarine* eS = new Submarine();
-    Destroyer* eD = new Destroyer();
-
-    Game::printBoard(*(player)); // TODO
-
-    for (int i = 0; i < count; ++i) {
-        switch (i) {
-            case 0:
-            std::cout << "Setting Carrier..." << std::endl;
-            coord = getPlayerCoord();
-            vertical = getPlayerVertical();
-            pC->vertical = vertical;
-            checkCoord(*(player), i, vertical, coord);
-            place(*(player), i, coord, vertical);
-            break;
-
-            case 1:
-            std::cout << "Setting Battleship..." << std::endl;
-            coord = getPlayerCoord();
-            vertical = getPlayerVertical();
-            pB->vertical = vertical;
-            checkCoord(*(player), i, pB->vertical, coord);
-            place(*(player), i, coord, vertical);
-            break;
-
-            case 2:
-            std::cout << "Setting Patrol..." << std::endl;
-            coord = getPlayerCoord();
-            vertical = getPlayerVertical();
-            pP->vertical = vertical;
-            checkCoord(*(player), i, pP->vertical, coord);
-            place(*(player), i, coord, vertical);
-            break;
-
-            case 3:
-            std::cout << "Setting Submarine..." << std::endl;
-            coord = getPlayerCoord();
-            vertical = getPlayerVertical();
-            pS->vertical = vertical;
-            checkCoord(*(player), i, pS->vertical, coord);
-            place(*(player), i, coord, vertical);
-            break;
-
-            case 4:
-            std::cout << "Setting Destroyer..." << std::endl;
-            coord = getPlayerCoord();
-            vertical = getPlayerVertical();
-            pD->vertical = vertical;
-            checkCoord(*(player), i, pD->vertical, coord);
-            place(*(player), i, coord, vertical);
-            break;
-        }
-        printBoard(*(player));
+bool Game::playGame() {
+    startGame();
+    while(gameCondition() == UNFINISHED) {
+        printGameState();
+        getNextMove();
+        getNextMoveAuto();
+        printGameState();
     }
 
-
-
-    std::cout << "|---------------------------- BATTLESHIP ----------------------------|" << std::endl;
+    if (gameCondition() == PLAYER_WIN)
+        std::cout << "Player wins!" << std::endl;
+    else
+        std::cout << "Enemy wins!" << std::endl;
+    
+    return true;
 }
+
+void Game::initializeBoard(Board& b) {
+    int xEntry, yEntry, horizEntry, attemptCount;
+    std::string entryTemp;
+    for (int i = 0; i < NUM_SHIPS; i++) 	{
+        attemptCount = 0;
+        do // check for valid placement of each ship
+        {
+            b.printPublicBoard();
+            if (attemptCount > 0)
+                std::cout << "INVALID ENTRY for that ship! Please try again. \n";
+
+            std::cout << "Please enter location [Letter][Number] for the " <<
+                "top/left of your " << SHIP_NAMES[i] << " which is length "
+                << SHIP_LENGTHS[i] << ": \n";
+            entryTemp = getSquare();
+            xEntry = static_cast<int>(entryTemp[0]);
+            yEntry = static_cast<int>(entryTemp[1]);
+
+            std::cout << "Please enter 0 if the ship is oriented vertically, "
+                << "1 if it is oriented horizontally:\n";
+            std::cin >> horizEntry;
+
+            attemptCount++;
+        } while (!b.placeShip(i, xEntry - LETTER_CHAR_OFFSET,
+            yEntry - NUMBER_CHAR_OFFSET, horizEntry));
+
+    }
+
+    std::cout << "Your starting board: \n";
+    b.printPublicBoard();
+}
+
+void Game::initializeBoardAuto(Board& b) {
+    int xEntry, yEntry, horizEntry;
+
+    for (int i = 0; i < NUM_SHIPS; i++) {
+        do // randomize position placements and place ships if possible
+        {
+            xEntry = rand() % 10;
+            yEntry = rand() % 10;
+            horizEntry = rand() % 2;
+        } while (!b.placeShip(i, xEntry, yEntry, horizEntry));
+
+    }
+}
+
+state Game::gameCondition() {
+    if (playerBoard->getNumHits() == TOTAL_SHIP_SPACES)
+        return PLAYER_WIN;
+    else if (enemyBoard->getNumHits() == TOTAL_SHIP_SPACES)
+        return ENEMY_WIN;
+    else
+        return UNFINISHED;
+}
+
+void Game::printGameState() {
+    std::cout << "ENEMY BOARD: \n";
+    enemyBoard->printPrivateBoard();
+    std::cout << "PLAYER BOARD: \n";
+    playerBoard->printPublicBoard();
+    std::cout << std::endl << std::endl;
+}
+
+void Game::getNextMove() {
+    int attemptCount = 0;
+    int xEntry, yEntry;
+    bool goodMove = false;
+    std::string entryTemp;
+
+    while (!goodMove) {
+        if (attemptCount > 0)
+            std::cout << "That move has already been attempted. Try again. \n";
+
+        std::cout << "Please enter location [Letter][Number] of desired move:\n";
+        entryTemp = getSquare();
+        xEntry = static_cast<int>(entryTemp[0]);
+        yEntry = static_cast<int>(entryTemp[1]);
+
+        if (playerBoard->getSpaceValue(xEntry - LETTER_CHAR_OFFSET,
+            yEntry - NUMBER_CHAR_OFFSET) != isHIT
+            && playerBoard->getSpaceValue(xEntry - LETTER_CHAR_OFFSET,
+                yEntry - NUMBER_CHAR_OFFSET) != isMISS) {
+            playerBoard->recordHit(xEntry - LETTER_CHAR_OFFSET, yEntry - NUMBER_CHAR_OFFSET);
+            goodMove = true;
+        }
+        attemptCount++;
+    }
+
+    return;
+}
+void Game::getNextMoveAuto() {
+    bool goodMove = false;
+    int xEntry, yEntry;
+
+    while (!goodMove) 	{
+        // randomly choose next move
+        xEntry = rand() % 10;
+        yEntry = rand() % 10;
+
+        if (enemyBoard->getSpaceValue(xEntry, yEntry) != isHIT
+            && enemyBoard->getSpaceValue(xEntry, yEntry) != isMISS) {
+            enemyBoard->recordHit(xEntry, yEntry);
+            goodMove = true;
+        }
+    }
+}
+
+std::string Game::getSquare() {
+    std::string retString;
+    std::getline(std::cin, retString);
+    bool isGoodInput = false;
+
+    while (!isGoodInput) {
+        // check for two character entries of letter/number
+        if (retString.length() == 2 && (retString[0] >= 65 && retString[0] <= 74)
+            && (retString[1] >= 48 && retString[1] <= 57))
+            isGoodInput = true;
+        else 		{
+            std::cout << "Bad input! Please enter location [Letter][Number] of "
+                << "your desired move, with capital letters only:\n";
+            std::getline(std::cin, retString);
+        }
+    }
+
+    return retString;
+}
+
+int main(int argc, char** argv) {
+    Game battleship;
+    battleship.playGame();
+    return 0;
+}
+
+// int getInt(int min, int max) {
+//     std::string retString;
+//     std::getline(std::cin, retString);
+//     bool isGoodInput = false;
+//     int nIter = 0;
+//     char tempChar;
+//     bool isNeg = false;
+//     int retInt = 0;
+
+//     while (!isGoodInput) 	{
+//         isGoodInput = true;
+//         // prompt fot input again if input was bad
+//         if (nIter > 0) 		{
+//             std::cout << "Bad input! Please enter an integer between " << min;
+//             std::cout << " and " << max << "." << std::endl;
+//             std::getline(std::cin, retString);
+//         }
+//         if (retString.length() > 0) 		{
+//             // process the string, char by char, to see if it's a numeric
+//             for (int i = 0; i < retString.length(); i++) 			{
+//                 tempChar = static_cast<char>(retString[i]);
+//                 // if the first character is a negatve, note it, and continue
+//                 if (i == 0 & tempChar == '-') 				{
+//                     isNeg = true;
+//                 }
+//                 // if char is numeric, update the integer to be returned
+//                 else 				{
+//                     if (tempChar >= ASCII_INT_MIN && tempChar <= ASCII_INT_MAX) 					{
+//                         retInt = retInt * 10 + (static_cast<int>(tempChar) -
+//                             ASCII_INT_MIN);
+//                     }
+//                     else // if any non-ints encountered, break loop
+//                     {
+//                         isGoodInput = false;
+//                         break;
+//                     }
+//                 }
+//             }
+//         }
+//         // zero length inputs are bad inputs
+//         else 		{
+//             isGoodInput = false;
+//         }
+
+//         // if negative, mutiply by -1
+//         if (isGoodInput && isNeg) 		{
+//             retInt = (-1) * retInt;
+//         }
+//         // check that int is between limits
+//         if (isGoodInput && (retInt<min || retInt>max)) 		{
+//             isGoodInput = false;
+//         }
+
+//         // if input was bad, reset trackers and start over again
+//         if (!isGoodInput) 		{
+//             retInt = 0;
+//             isNeg = false;
+//         }
+
+//         nIter++;
+//     }
+
+//     return retInt;
+// }
