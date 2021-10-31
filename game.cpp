@@ -2,23 +2,23 @@
 #include <iostream>
 #include <cstdlib>
 
-std::ostream& operator << (std::ostream& output, Board& b) {
-    output << "  A B C D E F G H I J\n";
-    for (int y = 0; y < BOARD_DIM; ++y) {
-        output << y << " ";
-        for (int x = 0; x < BOARD_DIM; ++x)
-            std::cout << b.gameBoard[y][x] << " ";
-        output << std::endl;
-    }
+// std::ostream& operator << (std::ostream& output, Board& b) {
+//     output << "  A B C D E F G H I J\n";
+//     for (int y = 0; y < BOARD_DIM; ++y) {
+//         output << y << " ";
+//         for (int x = 0; x < BOARD_DIM; ++x)
+//             std::cout << b.gameBoard[y][x] << " ";
+//         output << std::endl;
+//     }
 
-    return output;
-}
+//     return output;
+// }
 
 void Game::startGame() {
     playerBoard = new Board();
     enemyBoard = new Board();
-    initializeBoard(*(playerBoard));
-    initializeBoardAuto(*(enemyBoard));
+    initializeBoard();
+    initializeBoardAuto();
 }
 
 bool Game::playGame() {
@@ -38,20 +38,18 @@ bool Game::playGame() {
     return true;
 }
 
-void Game::initializeBoard(Board& b) {
+void Game::initializeBoard() {
     int xEntry, yEntry, horizEntry, attemptCount;
     std::string entryTemp;
     for (int i = 0; i < NUM_SHIPS; i++) 	{
         attemptCount = 0;
         do // check for valid placement of each ship
         {
-            b.printPublicBoard();
+            playerBoard->printPublicBoard();
             if (attemptCount > 0)
                 std::cout << "INVALID ENTRY for that ship! Please try again. \n";
 
-            std::cout << "Please enter location [Letter][Number] for the " <<
-                "top/left of your " << SHIP_NAMES[i] << " which is length "
-                << SHIP_LENGTHS[i] << ": \n";
+            std::cout << "Please enter location [Letter][Number] for the top/left of your " << SHIP_NAMES[i] << " which is length " << SHIP_LENGTHS[i] << ": \n";
             entryTemp = getSquare();
             xEntry = static_cast<int>(entryTemp[0]);
             yEntry = static_cast<int>(entryTemp[1]);
@@ -61,16 +59,16 @@ void Game::initializeBoard(Board& b) {
             std::cin >> horizEntry;
 
             attemptCount++;
-        } while (!b.placeShip(i, xEntry - LETTER_CHAR_OFFSET,
+        } while (!playerBoard->placeShip(i, xEntry - LETTER_CHAR_OFFSET,
             yEntry - NUMBER_CHAR_OFFSET, horizEntry));
 
     }
 
-    std::cout << "Your starting board: \n";
-    b.printPublicBoard();
+    std::cout << "Your starting board:" << std::endl;
+    playerBoard->printPublicBoard();
 }
 
-void Game::initializeBoardAuto(Board& b) {
+void Game::initializeBoardAuto() {
     int xEntry, yEntry, horizEntry;
 
     for (int i = 0; i < NUM_SHIPS; i++) {
@@ -79,7 +77,7 @@ void Game::initializeBoardAuto(Board& b) {
             xEntry = rand() % 10;
             yEntry = rand() % 10;
             horizEntry = rand() % 2;
-        } while (!b.placeShip(i, xEntry, yEntry, horizEntry));
+        } while (!enemyBoard->placeShip(i, xEntry, yEntry, horizEntry));
 
     }
 }

@@ -12,10 +12,9 @@ class Board
 {
 	private:
 		std::vector<Ship> shipVec;
-
 	public:
 		// friend class Game;
-		char gameBoard[BOARD_DIM][BOARD_DIM];
+
 
 		Board();
 		~Board();
@@ -25,6 +24,10 @@ class Board
 		char getSpaceValue(int x, int y);
 		bool recordHit(int x, int y);
 		bool placeShip(int shipNum, int x, int y, bool isHorizontal);
+		char gameBoard[BOARD_DIM][BOARD_DIM];
+
+		friend std::ostream& operator<<(std::ostream& output, Board& b);
+
 };
 
 #endif

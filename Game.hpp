@@ -15,8 +15,8 @@ class Game
 		// Board enemyBoard;
 		bool playGame();
 		void startGame();
-		void initializeBoard(Board &b);
-		void initializeBoardAuto(Board &b);
+		void initializeBoard();
+		void initializeBoardAuto();
 		state gameCondition();
 		void printGameState();
 		void getNextMove();
@@ -24,7 +24,7 @@ class Game
 		std::string getSquare();
 		int getInt(int min, int max);
 
-		friend std::ostream& operator<<(std::ostream& output, Board& b);
+		// friend std::ostream& operator<<(std::ostream& output, Board& b);
 
 };
 

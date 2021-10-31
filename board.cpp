@@ -2,8 +2,17 @@
 #include <iostream>
 
 
+std::ostream& operator << (std::ostream& output, Board& b) {
+    output << "  A B C D E F G H I J\n";
+    for (int y = 0; y < BOARD_DIM; ++y) {
+        output << y << " ";
+        for (int x = 0; x < BOARD_DIM; ++x)
+            output << b.gameBoard[y][x] << " ";
+        output << "\n";
+    }
 
-
+    return output;
+}
 Board::Board() {
     for (int y = 0; y < BOARD_DIM; ++y)
         for (int x = 0; x < BOARD_DIM; ++x)
@@ -30,8 +39,8 @@ void Board::printPrivateBoard() {
     for (int y = 0; y < BOARD_DIM; ++y) {
         std::cout << y << " ";
         for (int x = 0; x < BOARD_DIM; ++x) {
-            if (gameBoard[y][x] == isHIT || gameBoard[y][x] == isMISS)
-                std::cout << gameBoard[y][x] << " ";
+            if (this->gameBoard[y][x] == isHIT || this->gameBoard[y][x] == isMISS)
+                std::cout << this->gameBoard[y][x] << " ";
             else // obfuscate non-hit/miss entries
                 std::cout << isUNKNOWN << " ";
         }
@@ -40,13 +49,14 @@ void Board::printPrivateBoard() {
 }
 
 void Board::printPublicBoard() {
-    std::cout << "  A B C D E F G H I J\n";
-    for (int y = 0; y < BOARD_DIM; ++y) {
-        std::cout << y << " ";
-        for (int x = 0; x < BOARD_DIM; ++x)
-            std::cout << gameBoard[y][x] << " ";
-        std::cout << std::endl;
-    }
+    // std::cout << "  A B C D E F G H I J\n";
+    // for (int y = 0; y < BOARD_DIM; ++y) {
+    //     std::cout << y << " ";
+    //     for (int x = 0; x < BOARD_DIM; ++x)
+    //         std::cout << gameBoard[y][x] << " ";
+    //     std::cout << std::endl;
+    // }
+    std::cout << *(gameBoard) << std::endl;
 }
 char Board::getSpaceValue(int x, int y) {
     return gameBoard[y][x];
