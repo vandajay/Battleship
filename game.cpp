@@ -1,18 +1,6 @@
 #include "Game.hpp"
 #include <iostream>
-#include <cstdlib>
-
-// std::ostream& operator << (std::ostream& output, Board& b) {
-//     output << "  A B C D E F G H I J\n";
-//     for (int y = 0; y < BOARD_DIM; ++y) {
-//         output << y << " ";
-//         for (int x = 0; x < BOARD_DIM; ++x)
-//             std::cout << b.gameBoard[y][x] << " ";
-//         output << std::endl;
-//     }
-
-//     return output;
-// }
+#include <random>
 
 void Game::startGame() {
     playerBoard = new Board();
@@ -27,7 +15,6 @@ bool Game::playGame() {
         printGameState();
         getNextMove();
         getNextMoveAuto();
-        printGameState();
     }
 
     if (gameCondition() == PLAYER_WIN)
@@ -47,36 +34,35 @@ void Game::initializeBoard() {
         {
             playerBoard->printPublicBoard();
             if (attemptCount > 0)
-                std::cout << "INVALID ENTRY for that ship! Please try again. \n";
+                std::cout << "INVALID ENTRY for that ship! Please try again." << std::endl;
 
-            std::cout << "Please enter location [Letter][Number] for the top/left of your " << SHIP_NAMES[i] << " which is length " << SHIP_LENGTHS[i] << ": \n";
+            std::cout << "Please enter location [Letter][Number] for the top/left of your " << SHIP_NAMES[i] << " which is length " << SHIP_LENGTHS[i] << ":" << std::endl;
             entryTemp = getSquare();
             xEntry = static_cast<int>(entryTemp[0]);
             yEntry = static_cast<int>(entryTemp[1]);
 
-            std::cout << "Please enter 0 if the ship is oriented vertically, "
-                << "1 if it is oriented horizontally:\n";
+            std::cout << "Please enter 0 if the ship is oriented vertically, 1 if it is oriented horizontally:" << std::endl;
             std::cin >> horizEntry;
 
             attemptCount++;
-        } while (!playerBoard->placeShip(i, xEntry - LETTER_CHAR_OFFSET,
-            yEntry - NUMBER_CHAR_OFFSET, horizEntry));
-
+        } while (!playerBoard->placeShip(i, xEntry - ASCII_CHAR_MIN,
+            yEntry - ASCII_INT_MIN, horizEntry));
     }
-
-    std::cout << "Your starting board:" << std::endl;
-    playerBoard->printPublicBoard();
 }
 
 void Game::initializeBoardAuto() {
+    std::random_device device;
+    std::mt19937 gen32(device());
+    std::uniform_int_distribution<int> distribution9(0, 9);
+    std::uniform_int_distribution<int> distribution2(0, 1);
     int xEntry, yEntry, horizEntry;
 
     for (int i = 0; i < NUM_SHIPS; i++) {
         do // randomize position placements and place ships if possible
         {
-            xEntry = rand() % 10;
-            yEntry = rand() % 10;
-            horizEntry = rand() % 2;
+            xEntry = distribution9(gen32) % 10;
+            yEntry = distribution9(gen32) % 10;
+            horizEntry = distribution2(gen32) % 2;
         } while (!enemyBoard->placeShip(i, xEntry, yEntry, horizEntry));
 
     }
@@ -84,60 +70,62 @@ void Game::initializeBoardAuto() {
 
 state Game::gameCondition() {
     if (playerBoard->getNumHits() == TOTAL_SHIP_SPACES)
-        return PLAYER_WIN;
-    else if (enemyBoard->getNumHits() == TOTAL_SHIP_SPACES)
         return ENEMY_WIN;
+    else if (enemyBoard->getNumHits() == TOTAL_SHIP_SPACES)
+        return PLAYER_WIN;
     else
         return UNFINISHED;
 }
 
 void Game::printGameState() {
-    std::cout << "ENEMY BOARD: \n";
-    enemyBoard->printPrivateBoard();
-    std::cout << "PLAYER BOARD: \n";
+    std::cout << "ENEMY BOARD:" << std::endl;
+    enemyBoard->printPublicBoard();
+    std::cout << std::endl;
+    std::cout << "PLAYER BOARD:" << std::endl;
     playerBoard->printPublicBoard();
     std::cout << std::endl << std::endl;
 }
 
 void Game::getNextMove() {
-    int attemptCount = 0;
+    int trys = 0;
     int xEntry, yEntry;
     bool goodMove = false;
     std::string entryTemp;
 
     while (!goodMove) {
-        if (attemptCount > 0)
-            std::cout << "That move has already been attempted. Try again. \n";
+        if (trys > 0)
+            std::cout << "Move already exists..." << std::endl;
 
-        std::cout << "Please enter location [Letter][Number] of desired move:\n";
+        std::cout << "Please enter location [Letter][Number] of desired move:" << std::endl;
         entryTemp = getSquare();
         xEntry = static_cast<int>(entryTemp[0]);
         yEntry = static_cast<int>(entryTemp[1]);
 
-        if (playerBoard->getSpaceValue(xEntry - LETTER_CHAR_OFFSET,
-            yEntry - NUMBER_CHAR_OFFSET) != isHIT
-            && playerBoard->getSpaceValue(xEntry - LETTER_CHAR_OFFSET,
-                yEntry - NUMBER_CHAR_OFFSET) != isMISS) {
-            playerBoard->recordHit(xEntry - LETTER_CHAR_OFFSET, yEntry - NUMBER_CHAR_OFFSET);
+        if (enemyBoard->getSpaceValue(xEntry - ASCII_CHAR_MIN,
+            yEntry - ASCII_INT_MIN) != isHIT
+            && enemyBoard->getSpaceValue(xEntry - ASCII_CHAR_MIN,
+                yEntry - ASCII_INT_MIN) != isMISS) {
+            enemyBoard->recordHit(xEntry - ASCII_CHAR_MIN, yEntry - ASCII_INT_MIN);
             goodMove = true;
         }
-        attemptCount++;
+        trys++;
     }
-
-    return;
 }
+
 void Game::getNextMoveAuto() {
+    std::random_device device;
+    std::mt19937 gen32(device());
+    std::uniform_int_distribution<int> distribution(0, 9);
     bool goodMove = false;
     int xEntry, yEntry;
 
     while (!goodMove) 	{
         // randomly choose next move
-        xEntry = rand() % 10;
-        yEntry = rand() % 10;
+        xEntry = distribution(gen32) % 10;
+        yEntry = distribution(gen32) % 10;
 
-        if (enemyBoard->getSpaceValue(xEntry, yEntry) != isHIT
-            && enemyBoard->getSpaceValue(xEntry, yEntry) != isMISS) {
-            enemyBoard->recordHit(xEntry, yEntry);
+        if (playerBoard->getSpaceValue(xEntry, yEntry) != isHIT && playerBoard->getSpaceValue(xEntry, yEntry) != isMISS) {
+            playerBoard->recordHit(xEntry, yEntry);
             goodMove = true;
         }
     }
@@ -149,13 +137,14 @@ std::string Game::getSquare() {
     bool isGoodInput = false;
 
     while (!isGoodInput) {
-        // check for two character entries of letter/number
-        if (retString.length() == 2 && (retString[0] >= 65 && retString[0] <= 74)
-            && (retString[1] >= 48 && retString[1] <= 57))
+        /**
+         * check for two character entries of letter/number
+         * A=65, J=74, 48=0, 9=57
+         */
+        if (retString.length() == 2 && (retString[0] >= 65 && retString[0] <= 74) && (retString[1] >= 48 && retString[1] <= 57)) {
             isGoodInput = true;
-        else 		{
-            std::cout << "Bad input! Please enter location [Letter][Number] of "
-                << "your desired move, with capital letters only:\n";
+        } else {
+            std::cout << "Bad input! Please enter location [Letter][Number] of your desired move, with capital letters fonly:" << std::endl;
             std::getline(std::cin, retString);
         }
     }
@@ -167,68 +156,3 @@ int main(int argc, char** argv) {
     battleship.playGame();
     return 0;
 }
-
-// int getInt(int min, int max) {
-//     std::string retString;
-//     std::getline(std::cin, retString);
-//     bool isGoodInput = false;
-//     int nIter = 0;
-//     char tempChar;
-//     bool isNeg = false;
-//     int retInt = 0;
-
-//     while (!isGoodInput) 	{
-//         isGoodInput = true;
-//         // prompt fot input again if input was bad
-//         if (nIter > 0) 		{
-//             std::cout << "Bad input! Please enter an integer between " << min;
-//             std::cout << " and " << max << "." << std::endl;
-//             std::getline(std::cin, retString);
-//         }
-//         if (retString.length() > 0) 		{
-//             // process the string, char by char, to see if it's a numeric
-//             for (int i = 0; i < retString.length(); i++) 			{
-//                 tempChar = static_cast<char>(retString[i]);
-//                 // if the first character is a negatve, note it, and continue
-//                 if (i == 0 & tempChar == '-') 				{
-//                     isNeg = true;
-//                 }
-//                 // if char is numeric, update the integer to be returned
-//                 else 				{
-//                     if (tempChar >= ASCII_INT_MIN && tempChar <= ASCII_INT_MAX) 					{
-//                         retInt = retInt * 10 + (static_cast<int>(tempChar) -
-//                             ASCII_INT_MIN);
-//                     }
-//                     else // if any non-ints encountered, break loop
-//                     {
-//                         isGoodInput = false;
-//                         break;
-//                     }
-//                 }
-//             }
-//         }
-//         // zero length inputs are bad inputs
-//         else 		{
-//             isGoodInput = false;
-//         }
-
-//         // if negative, mutiply by -1
-//         if (isGoodInput && isNeg) 		{
-//             retInt = (-1) * retInt;
-//         }
-//         // check that int is between limits
-//         if (isGoodInput && (retInt<min || retInt>max)) 		{
-//             isGoodInput = false;
-//         }
-
-//         // if input was bad, reset trackers and start over again
-//         if (!isGoodInput) 		{
-//             retInt = 0;
-//             isNeg = false;
-//         }
-
-//         nIter++;
-//     }
-
-//     return retInt;
-// }

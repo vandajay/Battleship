@@ -1,4 +1,5 @@
 #include "Board.hpp"
+#include <string>
 
 #ifndef __GAME_HPP__
 #define __GAME_HPP__

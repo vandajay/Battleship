@@ -35,7 +35,7 @@ int Board::getNumHits() {
 }
 
 void Board::printPrivateBoard() {
-    std::cout << "  A B C D E F G H I J\n";
+    std::cout << "  A B C D E F G H I J" << std::endl;
     for (int y = 0; y < BOARD_DIM; ++y) {
         std::cout << y << " ";
         for (int x = 0; x < BOARD_DIM; ++x) {
@@ -49,7 +49,7 @@ void Board::printPrivateBoard() {
 }
 
 void Board::printPublicBoard() {
-    std::cout << "  A B C D E F G H I J\n";
+    std::cout << "  A B C D E F G H I J" << std::endl;
     for (int y = 0; y < BOARD_DIM; ++y) {
         std::cout << y << " ";
         for (int x = 0; x < BOARD_DIM; ++x)
@@ -72,7 +72,7 @@ bool Board::recordHit(int x, int y) {
             gameBoard[y][x] = isHIT; //record the hit on the board
             //tell the user that they sunk a ship
             if (shipVec[i].isShipSunk())
-                std::cout << "You sunk the " << shipVec[i].getName() << "!\n";
+                std::cout << "You sunk the " << shipVec[i].getName() << "!" << std::endl;
             return true;
         }
     }
