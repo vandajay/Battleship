@@ -159,7 +159,6 @@ std::string Game::getSquare() {
             std::getline(std::cin, retString);
         }
     }
-
     return retString;
 }
 

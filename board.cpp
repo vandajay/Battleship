@@ -2,17 +2,17 @@
 #include <iostream>
 
 
-std::ostream& operator << (std::ostream& output, Board& b) {
-    output << "  A B C D E F G H I J\n";
-    for (int y = 0; y < BOARD_DIM; ++y) {
-        output << y << " ";
-        for (int x = 0; x < BOARD_DIM; ++x)
-            output << b.gameBoard[y][x] << " ";
-        output << "\n";
-    }
+// std::ostream& operator << (std::ostream& output, Board& b) {
+//     output << "  A B C D E F G H I J" << std::endl;
+//     for (int y = 0; y < BOARD_DIM; ++y) {
+//         output << y << " ";
+//         for (int x = 0; x < BOARD_DIM; ++x)
+//             output << b.gameBoard[y][x] << std::endl;
+//         // output << std::endl;
+//     }
+//     return output;
+// }
 
-    return output;
-}
 Board::Board() {
     for (int y = 0; y < BOARD_DIM; ++y)
         for (int x = 0; x < BOARD_DIM; ++x)
@@ -31,9 +31,9 @@ int Board::getNumHits() {
         for (int j = 0; j < BOARD_DIM; j++)
             if (gameBoard[i][j] == isHIT)
                 count++;
-
     return count;
 }
+
 void Board::printPrivateBoard() {
     std::cout << "  A B C D E F G H I J\n";
     for (int y = 0; y < BOARD_DIM; ++y) {
@@ -49,14 +49,19 @@ void Board::printPrivateBoard() {
 }
 
 void Board::printPublicBoard() {
-    // std::cout << "  A B C D E F G H I J\n";
-    // for (int y = 0; y < BOARD_DIM; ++y) {
-    //     std::cout << y << " ";
-    //     for (int x = 0; x < BOARD_DIM; ++x)
-    //         std::cout << gameBoard[y][x] << " ";
-    //     std::cout << std::endl;
+    std::cout << "  A B C D E F G H I J\n";
+    for (int y = 0; y < BOARD_DIM; ++y) {
+        std::cout << y << " ";
+        for (int x = 0; x < BOARD_DIM; ++x)
+            std::cout << gameBoard[y][x] << " ";
+        std::cout << std::endl;
+    }
+    // std::cout << "  A B C D E F G H I J" << std::endl;
+    // for(int i = 0; i < 100; ++i) {
+    //     if(i % 10 == 0)
+    //         std::cout << i / 10;
+    //     std::cout << *(gameBoard) << std::endl;
     // }
-    std::cout << *(gameBoard) << std::endl;
 }
 char Board::getSpaceValue(int x, int y) {
     return gameBoard[y][x];

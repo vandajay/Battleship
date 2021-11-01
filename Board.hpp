@@ -5,7 +5,7 @@
 #include "Values.hpp"
 #include <vector>
 #include <stdio.h>
-#include <ostream>
+#include <iostream>
 
 
 class Board
@@ -26,7 +26,7 @@ class Board
 		bool placeShip(int shipNum, int x, int y, bool isHorizontal);
 		char gameBoard[BOARD_DIM][BOARD_DIM];
 
-		friend std::ostream& operator<<(std::ostream& output, Board& b);
+		// friend std::ostream& operator<<(std::ostream& output, Board& b);
 
 };
 
