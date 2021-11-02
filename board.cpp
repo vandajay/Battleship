@@ -72,7 +72,7 @@ bool Board::recordHit(int x, int y) {
             gameBoard[y][x] = isHIT; //record the hit on the board
             //tell the user that they sunk a ship
             if (shipVec[i].isShipSunk())
-                std::cout << "You sunk the " << shipVec[i].getName() << "!" << std::endl;
+                std::cout << std::endl << "** You sunk the " << shipVec[i].getName() << "! **" << std::endl;
             return true;
         }
     }

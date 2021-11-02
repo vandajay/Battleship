@@ -7,6 +7,7 @@ void Game::startGame() {
     enemyBoard = new Board();
     initializeBoard();
     initializeBoardAuto();
+    std::cout << std::endl << "** GAME START **" << std::endl;
 }
 
 bool Game::playGame() {
@@ -26,23 +27,28 @@ bool Game::playGame() {
 }
 
 void Game::initializeBoard() {
-    int xEntry, yEntry, horizEntry, attemptCount;
-    std::string entryTemp;
+    int xEntry, yEntry, attemptCount, horizEntry;
+    std::string entryTemp,horizTemp;
     for (int i = 0; i < NUM_SHIPS; i++) 	{
         attemptCount = 0;
         do // check for valid placement of each ship
         {
+            std::cout << std::endl;
             playerBoard->printPublicBoard();
+            std::cout << std::endl;
             if (attemptCount > 0)
                 std::cout << "INVALID ENTRY for that ship! Please try again." << std::endl;
 
-            std::cout << "Please enter location [Letter][Number] for the top/left of your " << SHIP_NAMES[i] << " which is length " << SHIP_LENGTHS[i] << ":" << std::endl;
+            std::cout << "Placing " << SHIP_NAMES[i] << ", Length " << SHIP_LENGTHS[i] << "..." << std::endl;
+            std::cout << "Enter coordinate [A-J][0-9]:" << std::endl;
             entryTemp = getSquare();
             xEntry = static_cast<int>(entryTemp[0]);
             yEntry = static_cast<int>(entryTemp[1]);
 
             std::cout << "Please enter 0 if the ship is oriented vertically, 1 if it is oriented horizontally:" << std::endl;
-            std::cin >> horizEntry;
+            
+            std::getline(std::cin, horizTemp);
+            horizEntry = std::stoi(horizTemp);
 
             attemptCount++;
         } while (!playerBoard->placeShip(i, xEntry - ASCII_CHAR_MIN,
@@ -54,7 +60,7 @@ void Game::initializeBoardAuto() {
     std::random_device device;
     std::mt19937 gen32(device());
     std::uniform_int_distribution<int> distribution9(0, 9);
-    std::uniform_int_distribution<int> distribution2(0, 1);
+    std::uniform_int_distribution<int> distribution1(0, 1);
     int xEntry, yEntry, horizEntry;
 
     for (int i = 0; i < NUM_SHIPS; i++) {
@@ -62,7 +68,7 @@ void Game::initializeBoardAuto() {
         {
             xEntry = distribution9(gen32) % 10;
             yEntry = distribution9(gen32) % 10;
-            horizEntry = distribution2(gen32) % 2;
+            horizEntry = distribution1(gen32) % 2;
         } while (!enemyBoard->placeShip(i, xEntry, yEntry, horizEntry));
 
     }
@@ -78,25 +84,26 @@ state Game::gameCondition() {
 }
 
 void Game::printGameState() {
-    std::cout << "ENEMY BOARD:" << std::endl;
-    enemyBoard->printPublicBoard();
-    std::cout << std::endl;
-    std::cout << "PLAYER BOARD:" << std::endl;
+    std::cout << std::endl << "ENEMY BOARD:" << std::endl;
+    enemyBoard->printPublicBoard(); // Used for debugging
+    // enemyBoard->printPrivateBoard();
+
+    std::cout << std::endl << "PLAYER BOARD:" << std::endl;
     playerBoard->printPublicBoard();
-    std::cout << std::endl << std::endl;
+    std::cout << std::endl;
 }
 
 void Game::getNextMove() {
-    int trys = 0;
+    int cnt = 0;
     int xEntry, yEntry;
     bool goodMove = false;
     std::string entryTemp;
 
     while (!goodMove) {
-        if (trys > 0)
+        if (cnt > 0)
             std::cout << "Move already exists..." << std::endl;
 
-        std::cout << "Please enter location [Letter][Number] of desired move:" << std::endl;
+        std::cout << "Enter move [A-J][0-9]:" << std::endl;
         entryTemp = getSquare();
         xEntry = static_cast<int>(entryTemp[0]);
         yEntry = static_cast<int>(entryTemp[1]);
@@ -108,21 +115,21 @@ void Game::getNextMove() {
             enemyBoard->recordHit(xEntry - ASCII_CHAR_MIN, yEntry - ASCII_INT_MIN);
             goodMove = true;
         }
-        trys++;
+        cnt++;
     }
 }
 
 void Game::getNextMoveAuto() {
     std::random_device device;
     std::mt19937 gen32(device());
-    std::uniform_int_distribution<int> distribution(0, 9);
+    std::uniform_int_distribution<int> distribution9(0, 9);
     bool goodMove = false;
     int xEntry, yEntry;
 
     while (!goodMove) 	{
         // randomly choose next move
-        xEntry = distribution(gen32) % 10;
-        yEntry = distribution(gen32) % 10;
+        xEntry = distribution9(gen32) % 10;
+        yEntry = distribution9(gen32) % 10;
 
         if (playerBoard->getSpaceValue(xEntry, yEntry) != isHIT && playerBoard->getSpaceValue(xEntry, yEntry) != isMISS) {
             playerBoard->recordHit(xEntry, yEntry);
