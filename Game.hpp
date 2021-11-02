@@ -4,7 +4,7 @@
 #ifndef __GAME_HPP__
 #define __GAME_HPP__
 
-enum state {PLAYER_WIN, ENEMY_WIN, UNFINISHED};
+enum state {PLAYER_WIN, ENEMY_WIN, PENDING};
 
 class Game
 {
@@ -12,16 +12,14 @@ class Game
 		Board* playerBoard;
 		Board* enemyBoard;
 	public:
-		// Board playerBoard;
-		// Board enemyBoard;
-		bool playGame();
+		void playGame();
 		void startGame();
-		void initializeBoard();
-		void initializeBoardAuto();
-		state gameCondition();
+		void initializeBoardPlayer();
+		void initializeBoardBot();
+		state getWinner();
 		void printGameState();
-		void getNextMove();
-		void getNextMoveAuto();
+		void nextMovePlayer();
+		void nextMoveBot();
 		std::string getSquare();
 		int getInt(int min, int max);
 

@@ -1,118 +1,159 @@
 #include "Board.hpp"
-#include <iostream>
 
-
+/***********************************************************************
+ * An attempt at overloading the stream operator for the purpose of
+ * passing only a board to std::cout for printing.
+ * @return std::ostream&
+ **********************************************************************/
 // std::ostream& operator << (std::ostream& output, Board& b) {
 //     output << "  A B C D E F G H I J" << std::endl;
 //     for (int y = 0; y < BOARD_DIM; ++y) {
 //         output << y << " ";
 //         for (int x = 0; x < BOARD_DIM; ++x)
-//             output << b.gameBoard[y][x] << std::endl;
+//             output << b.this->board[y][x] << std::endl;
 //         // output << std::endl;
 //     }
 //     return output;
 // }
 
+/***********************************************************************
+ * Default constructor that initializes an empty board of water, and 
+ * initializes the boards this->shipVector.
+ * @param none
+ **********************************************************************/
 Board::Board() {
     for (int y = 0; y < BOARD_DIM; ++y)
         for (int x = 0; x < BOARD_DIM; ++x)
-            gameBoard[y][x] = isWATER;
+            this->board[y][x] = isWATER;
 
-    for (int i = 0; i < NUM_SHIPS; i++)
-        shipVec.push_back(Ship(SHIP_LENGTHS[i], SHIP_NAMES[i]));
+    // initialize ships into vector of ships
+    for (int i = 0; i < NUM_SHIPS; ++i)
+        this->shipVector.push_back(Ship(SHIP_LENGTHS[i], SHIP_NAMES[i])); 
 }
 
-Board::~Board() { return; }
-
+/***********************************************************************
+ * Determines the number of current hits to a boards ships.
+ * @return int hits to boards ships (0<=17)
+ **********************************************************************/
 int Board::getNumHits() {
     int count = 0;
 
-    for (int i = 0; i < BOARD_DIM; i++)
-        for (int j = 0; j < BOARD_DIM; j++)
-            if (gameBoard[i][j] == isHIT)
+    for (int i = 0; i < BOARD_DIM; ++i)
+        for (int x = 0; x < BOARD_DIM; ++x)
+            if (this->board[i][x] == isHIT)
                 count++;
     return count;
 }
 
+/***********************************************************************
+ * Prints a board with "fog of war", used for enemy board.
+ * @return none
+ **********************************************************************/
 void Board::printPrivateBoard() {
     std::cout << "  A B C D E F G H I J" << std::endl;
     for (int y = 0; y < BOARD_DIM; ++y) {
         std::cout << y << " ";
         for (int x = 0; x < BOARD_DIM; ++x) {
-            if (this->gameBoard[y][x] == isHIT || this->gameBoard[y][x] == isMISS)
-                std::cout << this->gameBoard[y][x] << " ";
-            else // obfuscate non-hit/miss entries
-                std::cout << isUNKNOWN << " ";
+            if (this->board[y][x] == isHIT || this->board[y][x] == isMISS)
+                std::cout << this->board[y][x] << " ";
+            else // fog-o-war
+                std::cout << isFOG << " ";
         }
         std::cout << std::endl;
     }
 }
 
+/***********************************************************************
+ * Prints a board with ships visible, used for player board.
+ * @return none
+ **********************************************************************/
 void Board::printPublicBoard() {
     std::cout << "  A B C D E F G H I J" << std::endl;
     for (int y = 0; y < BOARD_DIM; ++y) {
         std::cout << y << " ";
         for (int x = 0; x < BOARD_DIM; ++x)
-            std::cout << gameBoard[y][x] << " ";
+            std::cout << this->board[y][x] << " ";
         std::cout << std::endl;
     }
     // std::cout << "  A B C D E F G H I J" << std::endl;
     // for(int i = 0; i < 100; ++i) {
     //     if(i % 10 == 0)
     //         std::cout << i / 10;
-    //     std::cout << *(gameBoard) << std::endl;
+    //     std::cout << *(this->board) << std::endl;
     // }
 }
-char Board::getSpaceValue(int x, int y) {
-    return gameBoard[y][x];
+
+/***********************************************************************
+ * Getter function for retrieving the current value for a cell.
+ * @param int x x coordinate for a cell, [A-J] on board
+ * @param int y y coordinate for a cell, [0-9] on board
+ * @return char the state of the cell
+ **********************************************************************/
+char Board::getCellState(int x, int y) {
+    return this->board[y][x];
 }
-bool Board::recordHit(int x, int y) {
-    for (int i = 0; i < NUM_SHIPS; i++) {
-        if (shipVec[i].recordHit(x, y)) {
-            gameBoard[y][x] = isHIT; //record the hit on the board
-            //tell the user that they sunk a ship
-            if (shipVec[i].isShipSunk())
-                std::cout << std::endl << "** You sunk the " << shipVec[i].getName() << "! **" << std::endl;
+
+/***********************************************************************
+ * Setter function for recording hits to board and ship.
+ * @param int x x coordinate for a target cell, [A-J] on board
+ * @param int y y coordinate for a target cell, [0-9] on board
+ * @return bool true on a successful hit, false for a miss
+ **********************************************************************/
+bool Board::setHit(int x, int y) {
+    for (int i = 0; i < NUM_SHIPS; ++i) {
+        if (this->shipVector[i].setHit(x, y)) {
+            // update board with hit
+            this->board[y][x] = isHIT;
+            // text confirmation if sink
+            if (this->shipVector[i].isShipSunk())
+                std::cout << std::endl << "** You sunk the " << this->shipVector[i].getName() << "! **" << std::endl;
             return true;
         }
     }
-    gameBoard[y][x] = isMISS;
+    this->board[y][x] = isMISS;
     return false;
 }
 
-bool Board::placeShip(int shipNum, int x, int y, bool isHorizontal) {
+/***********************************************************************
+ * Setter function for placing ships during game initialization.
+ * @param int shipNum number corresponds to what type of ship is being
+ * placed, 0=carrier...4=destroyer.
+ * @param int x x coordinate for a cell, [A-J] on board
+ * @param int y y coordinate for a cell, [0-9] on board
+ * @param bool h 1 for horizontal, 0 for vertical placement
+ * @return bool true on a successful hit, false for a miss
+ **********************************************************************/
+bool Board::placeShip(int shipNum, int x, int y, bool h) {
     //if x or y is out of bounds, return false
-    if (x >= BOARD_DIM || y >= BOARD_DIM)
+    if (y >= BOARD_DIM || x >= BOARD_DIM)
         return false;
 
-    //if ship has already been placed, return false
-    if (shipVec[shipNum].getX() >= 0 && shipVec[shipNum].getY() >= 0)
+    // ship already placed
+    if (this->shipVector[shipNum].getX() >= 0 && this->shipVector[shipNum].getY() >= 0)
         return false;
 
-    //loop through the positions required for the ship
-    for (int i = 0; i < shipVec[shipNum].getSize(); i++) 	{
-        //if any of the desired spaces are filled, return false
-        if ((isHorizontal && gameBoard[y][x + i] != isWATER) ||
-            (!isHorizontal && gameBoard[y + i][x] != isWATER))
+    // check required cells for ship
+    for (int i = 0; i < this->shipVector[shipNum].getSize(); ++i) {
+        // check if any cells are filled
+        if ((h && this->board[y][x + i] != isWATER) ||
+            (!h && this->board[y + i][x] != isWATER))
             return false;
-        //if any of the desired spaces are out of bounds, return false
-        if ((isHorizontal && (x + i) >= BOARD_DIM) ||
-            (!isHorizontal && (y + i) >= BOARD_DIM))
+        // check for out of bounds
+        if ((h && (x + i) >= BOARD_DIM) ||
+            (!h && (y + i) >= BOARD_DIM))
             return false;
     }
 
-    //if the for loop finishes, and all the positions are empty, 
-    //1. place the Ship in the desired position on the board
-    for (int i = 0; i < shipVec[shipNum].getSize(); i++) {
-        if (isHorizontal)
-            gameBoard[y][x + i] = isSAFESHIP;
+    // place ship
+    for (int i = 0; i < this->shipVector[shipNum].getSize(); ++i) {
+        if (h)
+            this->board[y][x + i] = isSHIP;
         else
-            gameBoard[y + i][x] = isSAFESHIP;
+            this->board[y + i][x] = isSHIP;
     }
 
-    //2. set the x/y parameters for the Ship object 
-    shipVec[shipNum].setPosition(x, y, isHorizontal);
+    // set ship object 
+    this->shipVector[shipNum].setPosition(x, y, h);
 
-    //... and return true
-    return true;
+    return true; // on successful ship placment
 }

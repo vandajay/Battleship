@@ -1,75 +1,109 @@
 
 #include "Ship.hpp"
 #include "Values.hpp"
-#include <iostream>
 
-Ship::Ship(int size, std::string n) {
-    shipSize = size;
+/***********************************************************************
+ * Constuctor that creates a ship using length, and name.
+ * @param int length length/hp of ship
+ * @param std::string name of ship
+ **********************************************************************/
+Ship::Ship(int length, std::string n) {
+    this->shipLength = length;
     name = n;
-    shipSquares = new char[shipSize];
-    for (int i = 0; i < shipSize; i++)
-        shipSquares[i] = isSAFESHIP; //initialize all ship squares to '_', no hit
-    xCoord = -1; //indicates that the ship has not been placed yet
-    yCoord = -1; //indicates that the ship has not been placed yet
-    isSunk = false; //since ship is new, it is not yet sunk
-    isHorizontal = true;
+    this->shipSquares = new char[this->shipLength];
+    for (int i = 0; i < this->shipLength; ++i)
+        this->shipSquares[i] = isSHIP; // initialize ship char
+    this->xCoord = -1; // not placed yet
+    this->yCoord = -1;
+    this->isSunk = false;
+    this->isHorizontal = true;
 }
 
-Ship::~Ship() {
-    // if (shipSize > 0)
-    //     delete[] shipSquares;
-}
-
+/***********************************************************************
+ * Getter function for retrieving ship length.
+ * @return int length of ship
+ **********************************************************************/
 int Ship::getSize() const {
-    return shipSize;
+    return this->shipLength;
 }
 
+/***********************************************************************
+ * Getter function for retrieving ship x coordinate.
+ * @return int x coordintate of ship, [A-J] on board
+ **********************************************************************/
 int Ship::getX() const {
-    return xCoord;
+    return this->xCoord;
 }
 
+/***********************************************************************
+ * Getter function for retrieving ship y coordinate.
+ * @return int y coordintate of ship [0-9] on board
+ **********************************************************************/
 int Ship::getY() const {
-    return yCoord;
+    return this->yCoord;
 }
 
+/***********************************************************************
+ * Getter function for retrieving a ships sunk state.
+ * @return bool true if ship is sunk, false if afloat
+ **********************************************************************/
 bool Ship::isShipSunk() const {
-    return isSunk;
+    return this->isSunk;
 }
 
+/***********************************************************************
+ * Getter function for finding if a ship is horizontal or vertical.
+ * @return bool true for horizontal, false for vertical
+ **********************************************************************/
 bool Ship::isShipHorizontal() const {
-    return isHorizontal;
+    return this->isHorizontal;
 }
 
+/***********************************************************************
+ * Getter function for retrieving ship name.
+ * @return std::string ship name
+ **********************************************************************/
 std::string Ship::getName() const {
-    return name;
+    return this->name;
 }
 
+/***********************************************************************
+ * Setter function for setting the topmost/leftmost position of a ship.
+ * @param int x x coordintate of ship, [A-J] on board
+ * @param int y y coordintate of ship [0-9] on board
+ * @param bool h true for horizontal, false for vertical
+ **********************************************************************/
 void Ship::setPosition(int x, int y, bool h) {
     xCoord = x;
     yCoord = y;
-    isHorizontal = h;
+    this->isHorizontal = h;
 }
 
-bool Ship::recordHit(int hitLocX, int hitLocY) {
-    //check to make sure that the hit is located on the ship, return if not
-    if ((isHorizontal & (hitLocX < xCoord || hitLocX >= xCoord + shipSize
-        || hitLocY != yCoord))
-        || (!isHorizontal & (hitLocY < yCoord || hitLocY >= yCoord + shipSize
-            || hitLocX != xCoord)))
-        return false; //return false because it was not a hit
-    else // if there is a hit, record it on the ship
-    {
+/***********************************************************************
+ * Setter function for recording hits to ship.
+ * @param int targetX x coordinate for target cell, [A-J] on board
+ * @param int targetX y coordinate for target cell, [0-9] on board
+ * @return bool true on a successful hit, false for a miss
+ **********************************************************************/
+bool Ship::setHit(int targetX, int targetY) {
+    // check for prexisting hit
+    if ((this->isHorizontal & (targetX < this->xCoord || targetX >= this->xCoord + this->shipLength
+        || targetY != yCoord))
+        || (!this->isHorizontal & (targetY < this->yCoord || targetY >= this->yCoord + this->shipLength
+            || targetX != this->xCoord))) // miss
+        return false; 
+    else { // hit
         if (isHorizontal)
-            shipSquares[hitLocX - xCoord] = isHIT;
+            this->shipSquares[targetX - this->xCoord] = isHIT;
         else
-            shipSquares[hitLocY - yCoord] = isHIT;
+            this->shipSquares[targetY - this->yCoord] = isHIT;
     }
 
-    //determine whether the ship has been sunk
-    isSunk = true;
-    for (int i = 0; i < shipSize; i++)
-        if (shipSquares[i] == isSAFESHIP)
-            isSunk = false;
+    this->isSunk = true;
+    // is ship sunk
+    for (int i = 0; i < this->shipLength; ++i)
+        if (this->shipSquares[i] == isSHIP)
+            this->isSunk = false;
 
     return true;
 }
