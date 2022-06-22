@@ -1,2 +1,2 @@
 # Battleship
-## CIS 343
+>A command line based recreation of the game battleship.
